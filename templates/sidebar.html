@@ -1,0 +1,11 @@
+<div class="row">
+    <div class="col s3">
+        <h4>Categories</h4>
+        <div class="collection">
+            {% for category in categories %}
+            <a href="{{url_for('showItems', category_id = category.id)}}" class="collection-item">{{category.name}}</a>
+            {% endfor %}
+        </div>
+        <a href="{{url_for('newCategory')}}" class="waves-effect waves-light btn">Add a new category</a>
+    </div>
+</div>
