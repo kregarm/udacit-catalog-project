@@ -51,7 +51,9 @@ def deleteCategory():
 @app.route('/<int:category_id>/items/')
 def showItems(category_id):
     categories = session.query(Categories).order_by(asc(Categories.name))
-    return render_template('show-items.html', categories = categories)
+    category = session.query(Categories).filter_by(id = category_id).one()
+    items = session.query(Item).filter_by(categories_id = category_id)
+    return render_template('show-items.html', categories = categories, items = items, category = category)
     
 '''
 @app.route('/<int:category_id>/<int:item_id>/')
@@ -59,8 +61,14 @@ def showItem():
 '''
 
 @app.route('/<int:category_id>/items/new/', methods=['GET', 'POST'])
-def newItem():
-    return render_template('show-items.html', categories = categories)
+def newItem(category_id):
+    if request.method == 'POST':
+        newItem = Item(name = request.form['name'], description = request.form['description'], categories_id = category_id)
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for('showItems',category_id = category_id))
+    if request.method == 'GET':
+        return render_template('new-item.html')
 '''
 @app.route('<int:category_id>/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem():
