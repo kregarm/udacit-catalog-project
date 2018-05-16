@@ -7,7 +7,7 @@
         <h4>Items</h4>
         <div class="collection">
             {% for item in items %}
-            <p class="collection-item">{{item.name}}</p>
+            <p class="collection-item"><a href="{{url_for('showItem', item_id = item.id, category_id = category.id)}}">{{item.name}}</p>
             {% endfor %}
         </div>
         <a href="{{url_for('newItem', category_id = category.id)}}" class="waves-effect waves-light btn">Add a new Item</a>
