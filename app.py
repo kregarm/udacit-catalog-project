@@ -72,10 +72,15 @@ def newItem(category_id):
         return redirect(url_for('showItems',category_id = category_id))
     if request.method == 'GET':
         return render_template('new-item.html')
-'''
-@app.route('<int:category_id>/<int:item_id>/edit/', methods=['GET', 'POST'])
-def editItem():
 
+@app.route('/<int:category_id>/items/<int:item_id>/edit/', methods=['GET', 'POST'])
+def editItem(category_id, item_id):
+    category = session.query(Categories).filter_by(id = category_id).one()
+    item = session.query(Item).filter_by(id = item_id).one()
+    return render_template('edit-item.html', item = item, category = category)
+    if request.method == 'GET':
+        return render_template('edit-item.html', item = item, category = category)
+'''
 @app.route('/<int:category_id>/<int:item_id>/delete/', methods=['GET', 'POST']))
 def deleteItem()
 '''
