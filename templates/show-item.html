@@ -2,21 +2,21 @@
 {% block content %}
 {% include "sidebar.html" %}
 
-<div class="col s6">
-    <h4>Item</h4>
-    <div class="card">
-        <div class="card-content">
-            <div class="card-title">
-                <span class="card-title">{{item.name}}</span>
-                <p>{{item.description}}</p>
-            </div>
-            <div class="card-action">
-                <a href="{{url_for('editItem', category_id = category.id, item_id = item.id)}}">Edit</a>
-                <a href="#">Delete</a>
+<div class="row">
+    <div class="col s8 offset-s2">
+        <div class="card">
+            <div class="card-content">
+                <div class="card-title">
+                    <span class="card-title"><b>{{item.name}}</b></span>
+                    <p>{{item.description}}</p>
+                </div>
+                <div class="card-action">
+                    <a href="{{url_for('editItem', category_id = category.id, item_id = item.id)}}">Edit</a>
+                    <a href="#">Delete</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </div>
 
 {% endblock %}

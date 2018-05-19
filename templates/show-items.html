@@ -1,16 +1,17 @@
 {% extends "main.html" %}
 {% block content %}
 {% include "sidebar.html" %}
-
-<div class="col s6">
-    <h4>Items</h4>
-    <div class="collection">
-        {% for item in items %}
-        <p class="collection-item"><a href="{{url_for('showItem', item_id = item.id, category_id = category.id)}}">{{item.name}}</p>
-        {% endfor %}
+<div class="row">
+    <div class="col s6 offset-s3">
+        <h4>Items in category {{category.name}}</h4>
+        <a href="{{url_for('editCategory', category_id = category.id)}}" class="waves-effect waves-light btn">Edit this category</a>
+        <div class="collection">
+            {% for item in items %}
+            <p class="collection-item"><a href="{{url_for('showItem', item_id = item.id, category_id = category.id)}}">{{item.name}}</p>
+            {% endfor %}
+        </div>
+        <a href="{{url_for('newItem', category_id = category.id)}}" class="waves-effect waves-light btn">Add a new Item</a>
     </div>
-    <a href="{{url_for('newItem', category_id = category.id)}}" class="waves-effect waves-light btn">Add a new Item</a>
-</div>
 </div>
 
 {% endblock %}

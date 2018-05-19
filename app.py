@@ -51,7 +51,7 @@ def editCategory(category_id):
         category.name = request.form['name']
         session.add(category)
         session.commit()
-        return redirect(url_for('showLanding'))
+        return redirect(url_for('showItems', category_id = category_id))
 
 '''
 @app.route('category/<int:category_id>/delete/', methods=['GET', 'POST'])
