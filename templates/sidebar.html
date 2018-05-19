@@ -4,7 +4,10 @@
         <h4>Categories</h4>
         <div class="collection">
             {% for category in categories %}
-            <a href="{{url_for('showItems', category_id = category.id)}}" class="collection-item">{{category.name}}</a>
+            <a href="{{url_for('showItems', category_id = category.id)}}" class="collection-item">
+                {{category.name}}
+                <a href="{{url_for('editCategory', category_id = category.id)}}">Edit</a>
+            </a> 
             {% endfor %}
         </div>
         <a href="{{url_for('newCategory')}}" class="waves-effect waves-light btn">Add a new category</a>

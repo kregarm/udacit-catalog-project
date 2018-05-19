@@ -40,10 +40,20 @@ def newCategory():
         return redirect(url_for('showLanding'))
     else: 
         return render_template('new-category.html')
-'''    
+   
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
-def editCategory():
+def editCategory(category_id):
+    category = session.query(Categories).filter_by(id = category_id).one()
+    print category
+    if request.method == 'GET':
+        return render_template('edit-category.html', category = category)
+    if request.method == 'POST':
+        category.name = request.form['name']
+        session.add(category)
+        session.commit()
+        return redirect(url_for('showLanding'))
 
+'''
 @app.route('category/<int:category_id>/delete/', methods=['GET', 'POST'])
 def deleteCategory():
 '''
