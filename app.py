@@ -53,10 +53,15 @@ def editCategory(category_id):
         session.commit()
         return redirect(url_for('showItems', category_id = category_id))
 
-'''
-@app.route('category/<int:category_id>/delete/', methods=['GET', 'POST'])
-def deleteCategory():
-'''
+
+@app.route('/category/<int:category_id>/delete/', methods=['GET'])
+def deleteCategory(category_id):
+    category = session.query(Categories).filter_by(id = category_id).one()
+    categories = session.query(Categories).order_by(asc(Categories.name))
+    if request.method == "GET":
+        session.delete(category)
+        session.commit()
+        return redirect(url_for('showLanding'))
 
 @app.route('/<int:category_id>/items/')
 def showItems(category_id):

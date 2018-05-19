@@ -11,8 +11,24 @@
             <input type ="text" class="form-control" maxlength="100" name="name" placeholder="{{category.name}}">
             <div class="padding-bottom"></div>
             <button class="btn btn-default" id="submit" type="submit">Save changes</button>
+            <button class="btn btn-default modal-trigger" href="#modal1">Delete</button>
             </div>
         </form>
     </div>
 </div>
+
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h4>Are you sure you want to delete {{category.name}}?</h4>
+    </div>
+    <div class="modal-footer">
+        <form action="{{url_for('deleteCategory', category_id = category.id)}}"  method="GET">
+            <button class="btn btn-default modal-close" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+    
+<script>
+    M.AutoInit();
+</script>
 {% endblock %}
