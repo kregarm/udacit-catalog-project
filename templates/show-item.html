@@ -12,11 +12,25 @@
                 </div>
                 <div class="card-action">
                     <a href="{{url_for('editItem', category_id = category.id, item_id = item.id)}}">Edit</a>
-                    <a href="#">Delete</a>
+                    <a class="modal-trigger" href="#modal1">Delete</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<div id="modal1" class="modal">
+    <div class="modal-content">
+        <h4>Are you sure you want to delete {{item.name}}?</h4>
+    </div>
+    <div class="modal-footer">
+        <form action="{{url_for('deleteItem', category_id = category.id, item_id = item.id)}}"  method="GET">
+            <button class="modal-close" type="submit">Delete</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    M.AutoInit();
+</script>
 {% endblock %}

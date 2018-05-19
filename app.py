@@ -104,10 +104,16 @@ def editItem(category_id, item_id):
         session.commit()
         return redirect(url_for('showItem', category_id = category_id, item_id = item_id))
         
-'''
-@app.route('/<int:category_id>/<int:item_id>/delete/', methods=['GET', 'POST']))
-def deleteItem()
-'''
+
+@app.route('/<int:category_id>/<int:item_id>/delete/', methods=['GET'])
+def deleteItem(category_id, item_id):
+    category = session.query(Categories).filter_by(id = category_id).one()
+    categories = session.query(Categories).order_by(asc(Categories.name))
+    item = session.query(Item).filter_by(id = item_id).one()
+    if request.method == "GET":
+        session.delete(item)
+        session.commit()
+        return redirect(url_for('showItems', category_id = category_id))
 
 if __name__ == '__main__':
     #app.secret_key = 'super_secret_key'
