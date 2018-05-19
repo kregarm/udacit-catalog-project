@@ -75,25 +75,31 @@ def showItem(category_id, item_id):
 
 @app.route('/<int:category_id>/items/new/', methods=['GET', 'POST'])
 def newItem(category_id):
+    categories = session.query(Categories).order_by(asc(Categories.name))
     if request.method == 'POST':
-        newItem = Item(name = request.form['name'], description = request.form['description'], categories_id = category_id)
+        newItem = Item(name = request.form['name'], description = request.form['description'], categories_id = request.form['category_id'])
         session.add(newItem)
         session.commit()
         return redirect(url_for('showItems',category_id = category_id))
     if request.method == 'GET':
-        return render_template('new-item.html')
+        return render_template('new-item.html', categories = categories)
 
 @app.route('/<int:category_id>/items/<int:item_id>/edit/', methods=['GET', 'POST'])
 def editItem(category_id, item_id):
     category = session.query(Categories).filter_by(id = category_id).one()
+    categories = session.query(Categories).order_by(asc(Categories.name))
     item = session.query(Item).filter_by(id = item_id).one()
     if request.method == 'GET':
-        return render_template('edit-item.html', item = item, category = category)
+        return render_template('edit-item.html', item = item, category = category, categories = categories)
     if request.method == 'POST':
         if request.form['name']:
             item.name = request.form['name']
         if request.form['description']:
             item.description = request.form['description']
+        if request.form['category_id']:
+            item.categories_id = request.form['category_id']
+            #Reassigned category_id to properly redirect a user if there was a category change
+            category_id = request.form['category_id']
         session.add(item)
         session.commit()
         return redirect(url_for('showItem', category_id = category_id, item_id = item_id))

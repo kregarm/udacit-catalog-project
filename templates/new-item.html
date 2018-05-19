@@ -6,14 +6,27 @@
     <div class="col s6 offset-s3">
         <h1>Add a new item</h1>
         <form action="#" method = "post">
-            <div class="form-group">
-            <label for="name">Name:</label>
-            <input type ="text" class="form-control" maxlength="100" name="name">
-            <label for="name">Description:</label>
-            <input type ="text" class="form-control" maxlength="100" name="description">
-            <button type="submit" class="btn btn-default" id="submit" type="submit">Create</button>
+            <div>
+                <label for="name">Name:</label>
+                <input type ="text" maxlength="100" name="name">
+                <label for="name">Description:</label>
+                <textarea class="materialize-textarea" name="description"></textarea>
+                <div class="input-field">
+                    <select name="category_id">
+                        <option value="" disabled selected>Select category</option>
+                        {% for cat in categories %}
+                        <option value="{{cat.id}}">{{cat.name}}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Category</label> 
+                </div>
+                <button type="submit" class="btn btn-default" id="submit" type="submit">Create</button>
             </div>
         </form>
     </div>
 </div>
+
+<script>
+M.AutoInit();
+</script>
 {% endblock %}
