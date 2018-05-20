@@ -30,7 +30,6 @@ def showLanding():
     categories = session.query(Categories).order_by(asc(Categories.name))
     return render_template('landing.html', categories = categories)
     
-
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
     if request.method == 'POST':
@@ -53,7 +52,6 @@ def editCategory(category_id):
         session.commit()
         return redirect(url_for('showItems', category_id = category_id))
 
-
 @app.route('/category/<int:category_id>/delete/', methods=['GET'])
 def deleteCategory(category_id):
     category = session.query(Categories).filter_by(id = category_id).one()
@@ -70,7 +68,6 @@ def showItems(category_id):
     items = session.query(Item).filter_by(categories_id = category_id)
     return render_template('show-items.html', categories = categories, items = items, category = category)
     
-
 @app.route('/<int:category_id>/<int:item_id>/')
 def showItem(category_id, item_id):
     categories = session.query(Categories).order_by(asc(Categories.name))
@@ -109,7 +106,6 @@ def editItem(category_id, item_id):
         session.commit()
         return redirect(url_for('showItem', category_id = category_id, item_id = item_id))
         
-
 @app.route('/<int:category_id>/<int:item_id>/delete/', methods=['GET'])
 def deleteItem(category_id, item_id):
     category = session.query(Categories).filter_by(id = category_id).one()
@@ -119,6 +115,17 @@ def deleteItem(category_id, item_id):
         session.delete(item)
         session.commit()
         return redirect(url_for('showItems', category_id = category_id))
+
+@app.route('/categories/json/')
+def showJsonCategories():
+    categories = session.query(Categories).all()
+    return jsonify(categories = [c.serialize for c in categories])
+
+@app.route('/items/json/')
+def showJsonItems():
+    items = session.query(Item).all()
+    return jsonify(items = [i.serialize for i in items])
+
 
 if __name__ == '__main__':
     #app.secret_key = 'super_secret_key'
