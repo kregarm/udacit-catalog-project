@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect,jsonify, url_for, flash
 app = Flask(__name__)
+app.secret_key = 'some_secret'
 
 from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
@@ -37,6 +38,7 @@ def newCategory():
     if request.method == 'POST':
         newCategory = Categories(name = request.form['name'])
         session.add(newCategory)
+        flash('New category %s created' % newCategory.name)
         session.commit()
         return redirect(url_for('showLanding'))
     else: 
@@ -52,6 +54,7 @@ def editCategory(category_id):
     if request.method == 'POST':
         category.name = request.form['name']
         session.add(category)
+        flash('Category %s edited' % category.name)
         session.commit()
         return redirect(url_for('showItems', category_id = category_id))
 
@@ -63,6 +66,7 @@ def deleteCategory(category_id):
     if request.method == "GET":
         session.delete(category)
         session.commit()
+        flash('Category %s deleted' % category.name)
         return redirect(url_for('showLanding'))
 
 @app.route('/<int:category_id>/items/')
@@ -88,6 +92,7 @@ def newItem(category_id):
     if request.method == 'POST':
         newItem = Item(name = request.form['name'], description = request.form['description'], categories_id = request.form['category_id'])
         session.add(newItem)
+        flash('Item %s added' % newItem.name)
         session.commit()
         return redirect(url_for('showItems',category_id = category_id))
     if request.method == 'GET':
@@ -111,6 +116,7 @@ def editItem(category_id, item_id):
             #Reassigned category_id to properly redirect a user if there was a category change
             category_id = request.form['category_id']
         session.add(item)
+        flash('Item %s edited' % item.name)
         session.commit()
         return redirect(url_for('showItem', category_id = category_id, item_id = item_id))
         
@@ -123,6 +129,7 @@ def deleteItem(category_id, item_id):
     if request.method == "GET":
         session.delete(item)
         session.commit()
+        flash('Item %s deleted' % item.name)
         return redirect(url_for('showItems', category_id = category_id))
 
 @app.route('/categories/json/')
