@@ -22,7 +22,7 @@
     <div class="col s10 offset-s2">
         <p>Please select a category to view the related items.</p>
         {%if 'username' not in session %}
-        <div id="signinButton">
+        <div id="signinButton" data-target="modal1" class="btn modal-trigger">
             <span class="g-signin"
                 data-scope="openid email"
                 data-clientid="269573011735-tfn02ooo0q2j86genel5j5l46mqh0pot.apps.googleusercontent.com"
@@ -34,6 +34,13 @@
             </span>
         </div>
         {% endif %}
+    </div>
+</div>
+
+ <!-- Modal Structure -->
+ <div id="modal1" class="modal">
+    <div class="modal-content">
+        <div id="result"></div>
     </div>
 </div>
 
@@ -65,5 +72,6 @@
             });
         }
     }
+    M.AutoInit();
 </script>
 {% endblock %}
