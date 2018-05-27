@@ -24,9 +24,11 @@
                     <span class="card-title"><b>{{item.name}}</b></span>
                     <p>{{item.description}}</p>
                 </div>
+                {%if 'username' in session %}
                 <div class="card-action">
                     <a href="{{url_for('editItem', category_id = category.id, item_id = item.id)}}">Edit</a>
                     <a class="modal-trigger" href="#modal1">Delete</a>
+                {% endif %}
                 </div>
             </div>
         </div>

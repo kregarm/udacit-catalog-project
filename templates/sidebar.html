@@ -4,6 +4,10 @@
         <a href="{{url_for('showItems', category_id = category.id)}}">{{category.name}}</a>
     </li>
     {% endfor %}
-    <li><a href="{{url_for('newCategory')}}" class="waves-effect waves-light btn">Add a new category</a></li>
+    {%if 'username' in session %}
+    <li>
+        <a href="{{url_for('newCategory')}}" class="waves-effect waves-light btn">Add a new category</a>
+    </li>
+    {% endif %}
 </ul>
     
