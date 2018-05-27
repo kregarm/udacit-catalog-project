@@ -8,11 +8,11 @@
         <form action="#" method = "post">
             <div>
                 <label for="name">Name:</label>
-                <input type ="text" maxlength="100" name="name">
+                <input type ="text" maxlength="100" name="name" required>
                 <label for="name">Description:</label>
-                <textarea class="materialize-textarea" name="description"></textarea>
+                <textarea class="materialize-textarea" name="description" required></textarea>
                 <div class="input-field">
-                    <select name="category_id">
+                    <select name="category_id" required>
                         <option value="" disabled selected>Select category</option>
                         {% for cat in categories %}
                         <option value="{{cat.id}}">{{cat.name}}</option>
