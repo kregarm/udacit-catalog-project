@@ -234,12 +234,12 @@ def editCategory(category_id):
         return redirect(url_for('showItems', category_id=category_id))
 
 
-@app.route('/category/<int:category_id>/delete/', methods=['GET'])
+@app.route('/category/<int:category_id>/delete/', methods=['POST'])
 def deleteCategory(category_id):
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
     categories = session.query(Categories).order_by(asc(Categories.name))
-    if request.method == "GET":
+    if request.method == "POST":
         session.delete(category)
         session.commit()
         flash('Category %s deleted' % category.name)
@@ -317,13 +317,13 @@ def editItem(category_id, item_id):
                         item_id=item_id))
 
 
-@app.route('/<int:category_id>/<int:item_id>/delete/', methods=['GET'])
+@app.route('/<int:category_id>/<int:item_id>/delete/', methods=['POST'])
 def deleteItem(category_id, item_id):
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
     categories = session.query(Categories).order_by(asc(Categories.name))
     item = session.query(Item).filter_by(id=item_id).one()
-    if request.method == "GET":
+    if request.method == "POST":
         session.delete(item)
         session.commit()
         flash('Item %s deleted' % item.name)
