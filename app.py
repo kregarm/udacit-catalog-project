@@ -227,6 +227,10 @@ def editCategory(category_id):
     if request.method == 'GET':
         return render_template('edit-category.html', category=category)
     if request.method == 'POST':
+
+        if login_session['user_id'] != category.user_id:
+            return "Unauthorized request"
+
         category.name = request.form['name']
         session.add(category)
         flash('Category %s edited' % category.name)
@@ -240,6 +244,8 @@ def deleteCategory(category_id):
     category = session.query(Categories).filter_by(id=category_id).one()
     categories = session.query(Categories).order_by(asc(Categories.name))
     if request.method == "POST":
+        if login_session['user_id'] != category.user_id:
+            return "Unauthorized request"
         session.delete(category)
         session.commit()
         flash('Category %s deleted' % category.name)
@@ -302,6 +308,8 @@ def editItem(category_id, item_id):
             return render_template('edit-item.html', item=item,
                                    category=category, categories=categories)
     if request.method == 'POST':
+        if login_session['user_id'] != item.user_id:
+            return "Unauthorized request"
         item.name = request.form['name']
         item.description = request.form['description']
         item.categories_id = request.form['category_id']
@@ -324,6 +332,8 @@ def deleteItem(category_id, item_id):
     categories = session.query(Categories).order_by(asc(Categories.name))
     item = session.query(Item).filter_by(id=item_id).one()
     if request.method == "POST":
+        if login_session['user_id'] != item.user_id:
+            return "Unauthorized request"
         session.delete(item)
         session.commit()
         flash('Item %s deleted' % item.name)
