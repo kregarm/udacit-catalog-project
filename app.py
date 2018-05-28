@@ -98,13 +98,14 @@ def gconnect():
     login_session['access_token'] = credentials.access_token
     login_session['gplus_id'] = gplus_id
 
-    # Get user info
+    # Get user info from google
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
 
     data = answer.json()
 
+    # Store info from Google to login_session
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
@@ -112,10 +113,14 @@ def gconnect():
     user_id = getUserId(login_session['email'])
     print 'user id'
     print user_id
+
+    # Create a new user if it does not yet exists
     if user_id is None:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
+    # Login and redirect view which populates the modal
+    # on the landing.html template
     print('this is the login session')
     print(login_session)
     output = ''
