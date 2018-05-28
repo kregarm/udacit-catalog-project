@@ -24,7 +24,7 @@
                     <span class="card-title"><b>{{item.name}}</b></span>
                     <p>{{item.description}}</p>
                 </div>
-                {%if 'username' in session %}
+                {%if 'username' in session and user_id==item.user_id%}
                 <div class="card-action">
                     <a href="{{url_for('editItem', category_id = category.id, item_id = item.id)}}">Edit</a>
                     <a class="modal-trigger" href="#modal1">Delete</a>

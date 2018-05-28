@@ -19,7 +19,7 @@
 <div class="row">
     <div class="col s6 offset-s4">
         <h4>Items in category {{category.name}}</h4>
-        {%if 'username' in session %}
+        {%if 'username' in session and user_id==category.user_id%}
         <a href="{{url_for('editCategory', category_id = category.id)}}" class="waves-effect waves-light btn">Edit this category</a>
         {% endif %}
         <div class="collection">

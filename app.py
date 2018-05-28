@@ -207,7 +207,8 @@ def newCategory():
         return redirect(url_for('showLanding'))
     session = DBSession()
     if request.method == 'POST':
-        newCategory = Categories(name=request.form['name'])
+        newCategory = Categories(name=request.form['name'],
+                                 user_id=login_session['user_id'])
         session.add(newCategory)
         flash('New category %s created' % newCategory.name)
         session.commit()
@@ -218,10 +219,10 @@ def newCategory():
 
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
-    if 'username' not in login_session:
-        return redirect(url_for('showLanding'))
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
+    if 'username' not in login_session or category.user_id != login_session['user_id']:
+        return redirect(url_for('showLanding'))
     print category
     if request.method == 'GET':
         return render_template('edit-category.html', category=category)
@@ -252,7 +253,8 @@ def showItems(category_id):
     category = session.query(Categories).filter_by(id=category_id).one()
     items = session.query(Item).filter_by(categories_id=category_id)
     return render_template('show-items.html', categories=categories,
-                           items=items, category=category)
+                           items=items, category=category,
+                           user_id=login_session['user_id'])
 
 
 @app.route('/<int:category_id>/<int:item_id>/')
@@ -262,7 +264,8 @@ def showItem(category_id, item_id):
     category = session.query(Categories).filter_by(id=category_id).one()
     item = session.query(Item).filter_by(id=item_id).one()
     return render_template('show-item.html', item=item,
-                           category=category, categories=categories)
+                           category=category, categories=categories,
+                           user_id=login_session['user_id'])
 
 
 @app.route('/<int:category_id>/items/new/', methods=['GET', 'POST'])
@@ -272,7 +275,8 @@ def newItem(category_id):
     if request.method == 'POST':
         newItem = Item(name=request.form['name'],
                        description=request.form['description'],
-                       categories_id=request.form['category_id'])
+                       categories_id=request.form['category_id'],
+                       user_id=login_session['user_id'])
         session.add(newItem)
         flash('Item %s added' % newItem.name)
         session.commit()
@@ -292,7 +296,7 @@ def editItem(category_id, item_id):
     categories = session.query(Categories).order_by(asc(Categories.name))
     item = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
-        if 'username' not in login_session:
+        if 'username' not in login_session or item.user_id != login_session['user_id']:
             return redirect(url_for('showLanding'))
         else:
             return render_template('edit-item.html', item=item,
