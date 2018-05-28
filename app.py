@@ -227,7 +227,6 @@ def editCategory(category_id):
     if request.method == 'GET':
         return render_template('edit-category.html', category=category)
     if request.method == 'POST':
-
         if login_session['user_id'] != category.user_id:
             return "Unauthorized request"
 
