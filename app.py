@@ -109,10 +109,8 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
-
+    
     user_id = getUserId(login_session['email'])
-    print 'user id'
-    print user_id
 
     # Create a new user if it does not yet exists
     if user_id is None:
@@ -175,7 +173,8 @@ def gdisconnect():
     print ('In gdisconnect access token is %s', access_token)
     print ('User name is: ')
     print (login_session['username'])
-    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token']
+    at = login_session['access_token']
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % at
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
     print ('result is ')
@@ -191,7 +190,9 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return redirect(url_for('showLanding'))
     else:
-        response = make_response(json.dumps('Failed to revoke token for given user.', 400))
+        response = make_response(json.dumps
+                                 ('Failed to revoke token for given user.',
+                                  400))
         response.headers['Content-Type'] = 'application/json'
         return response
 
@@ -226,9 +227,9 @@ def newCategory():
 def editCategory(category_id):
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
-    if 'username' not in login_session or category.user_id != login_session['user_id']:
+    if ('username' not in login_session or
+       category.user_id != login_session['user_id']):
         return redirect(url_for('showLanding'))
-    print category
     if request.method == 'GET':
         return render_template('edit-category.html', category=category)
     if request.method == 'POST':
@@ -306,7 +307,8 @@ def editItem(category_id, item_id):
     categories = session.query(Categories).order_by(asc(Categories.name))
     item = session.query(Item).filter_by(id=item_id).one()
     if request.method == 'GET':
-        if 'username' not in login_session or item.user_id != login_session['user_id']:
+        if ('username' not in login_session or
+           item.user_id != login_session['user_id']):
             return redirect(url_for('showLanding'))
         else:
             return render_template('edit-item.html', item=item,
