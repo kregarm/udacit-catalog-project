@@ -109,7 +109,7 @@ def gconnect():
     login_session['username'] = data['name']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
-    
+
     user_id = getUserId(login_session['email'])
 
     # Create a new user if it does not yet exists
@@ -354,9 +354,23 @@ def showJsonCategories():
 
 
 @app.route('/items/json/')
-def showJsonItems():
+def showAllJsonItems():
     session = DBSession()
     items = session.query(Item).all()
+    return jsonify(items=[i.serialize for i in items])
+
+
+@app.route('/<int:category_id>/items/json/')
+def showJsonItemsFromOneCategory(category_id):
+    session = DBSession()
+    items = session.query(Item).filter_by(categories_id=category_id).all()
+    return jsonify(items=[i.serialize for i in items])
+
+
+@app.route('/items/<int:item_id>/json/')
+def showJsonItem(item_id):
+    session = DBSession()
+    items = session.query(Item).filter_by(id=item_id).all()
     return jsonify(items=[i.serialize for i in items])
 
 
