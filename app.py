@@ -36,6 +36,13 @@ DBSession = sessionmaker(bind=engine)
 
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
+
+    '''
+    This function gathers data from Google API and stores it into a session
+    variable. If it is a new user this function creates a new entry into
+    the database and also populates the redirect view with the user's data.
+    '''
+
     # Validate token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('invalid state paramater'), 401)
@@ -163,6 +170,12 @@ def getUserId(user_email):
 
 @app.route('/gdisconnect')
 def gdisconnect():
+
+    '''
+    This function logs out a user, clears his login_session
+    and redirects him back to the landing page.
+    '''
+
     access_token = login_session.get('access_token')
     if access_token is None:
         print ('Access Token is None')
@@ -177,8 +190,6 @@ def gdisconnect():
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % at
     h = httplib2.Http()
     result = h.request(url, 'GET')[0]
-    print ('result is ')
-    print (result)
     if result['status'] == '200':
         del login_session['access_token']
         del login_session['state']
@@ -199,6 +210,12 @@ def gdisconnect():
 
 @app.route('/')
 def showLanding():
+
+    '''
+    Creates the state used for authentication, queries the database
+    and renders the landing page template.
+    '''
+
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
                     for x in range(32))
     login_session['state'] = state
@@ -209,6 +226,13 @@ def showLanding():
 
 @app.route('/category/new/', methods=['GET', 'POST'])
 def newCategory():
+
+    '''
+    Checks if a user is logged in, provides the html template on
+    GET request and stores data into the DB on POST request. It
+    also takes care of the flash message.
+    '''
+
     if 'username' not in login_session:
         return redirect(url_for('showLanding'))
     session = DBSession()
@@ -225,6 +249,20 @@ def newCategory():
 
 @app.route('/category/<int:category_id>/edit/', methods=['GET', 'POST'])
 def editCategory(category_id):
+
+    '''
+    Connects to the DB, queries the categories and checks if a user is
+    logged in. It also checks if is the same user who created the
+    category and redirects the users if they aren't the creators of
+    the category.
+    It provides the html template on GET request and stores data
+    into the DB on POST request.
+    Authorization check is also made on the POST method.
+    Function takes care of the flash message.
+
+    :param category_id: the ID of the edited category
+    '''
+
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
     if ('username' not in login_session or
@@ -245,6 +283,16 @@ def editCategory(category_id):
 
 @app.route('/category/<int:category_id>/delete/', methods=['POST'])
 def deleteCategory(category_id):
+
+    '''
+    Connects to the DB and queries the categories. It only allows POST
+    request and makes another check that the user who is trying to
+    delete the category is also the one who made it.
+    Function takes care of the flash message.
+
+    :param category_id: the ID of the selected category
+    '''
+
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
     categories = session.query(Categories).order_by(asc(Categories.name))
@@ -259,6 +307,14 @@ def deleteCategory(category_id):
 
 @app.route('/<int:category_id>/items/')
 def showItems(category_id):
+
+    '''
+    Connects to the DB and queries the items for the selected category
+    and renders the template.
+
+    :param category_id: the ID of the selected category
+    '''
+
     session = DBSession()
     categories = session.query(Categories).order_by(asc(Categories.name))
     category = session.query(Categories).filter_by(id=category_id).one()
@@ -270,6 +326,15 @@ def showItems(category_id):
 
 @app.route('/<int:category_id>/<int:item_id>/')
 def showItem(category_id, item_id):
+
+    '''
+    Connects to the DB and queries the item from the selected category
+    and renders the template.
+
+    :param category_id: the ID of the selected category
+    :param item_id: the ID of the selected item
+    '''
+
     session = DBSession()
     categories = session.query(Categories).order_by(asc(Categories.name))
     category = session.query(Categories).filter_by(id=category_id).one()
@@ -281,6 +346,13 @@ def showItem(category_id, item_id):
 
 @app.route('/<int:category_id>/items/new/', methods=['GET', 'POST'])
 def newItem(category_id):
+
+    '''
+    Checks if a user is logged in, provides the html template on
+    GET request and stores data into the DB on POST request. It
+    also takes care of the flash message.
+    '''
+
     session = DBSession()
     categories = session.query(Categories).order_by(asc(Categories.name))
     if request.method == 'POST':
@@ -302,6 +374,19 @@ def newItem(category_id):
 @app.route('/<int:category_id>/items/<int:item_id>/edit/',
            methods=['GET', 'POST'])
 def editItem(category_id, item_id):
+
+    '''
+    Connects to the DB, queries the categories, items and checks if a user is
+    logged in and it is the same user who created the item. Function redirects
+    the users if they aren't the creators of the item. It provides the html
+    template on GET request and stores data into the DB on POST request.
+    Authorization check is also made on the POST request.
+    Function takes care of the flash message.
+
+    :param category_id: the ID of the selected category
+    :param item_id: the ID of the edited item
+    '''
+
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
     categories = session.query(Categories).order_by(asc(Categories.name))
@@ -333,6 +418,17 @@ def editItem(category_id, item_id):
 
 @app.route('/<int:category_id>/<int:item_id>/delete/', methods=['POST'])
 def deleteItem(category_id, item_id):
+
+    '''
+    Connects to the DB and queries the categories and items.
+    It only allows POST request and makes another check that the user
+    who is trying to delete the item is also the one who made it.
+    Function takes care of the flash message.
+
+    :param category_id: the ID of the selected category
+    :param item_id: the ID of the item a user wishes to delete
+    '''
+
     session = DBSession()
     category = session.query(Categories).filter_by(id=category_id).one()
     categories = session.query(Categories).order_by(asc(Categories.name))
